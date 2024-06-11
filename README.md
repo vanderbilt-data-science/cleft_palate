@@ -12,6 +12,15 @@ The Cleft Palate Project is suitable for those with and without access to advanc
 
 To contribute to the project, please contact the DSI staff lead (Myranda Shirk - myranda.shirk@vanderbilt.edu). Our community is supportive, and we provide training and classes if you're new to any of the frameworks used in the project. Everyone is welcome to contribute, as we believe participating in data science and AI projects is an excellent way to learn.
 
+### Workflow
+
+To run the notebooks for this project:
+
+1. Clone the repo. The test/train data is in the `data` folder.
+2. Run Steps 1-3 in the notebook `01-load-data.ipynb`.
+3. Run the training notebook for any Whisper size (train notebooks begin with `21-train-`). 
+4. Load the model you trained in `31-eval.ipynb`, and run the notebook to evaluate.
+
 ## Results
 
 We are currently training and evaluating our approach. To view the current model results, please see the 'notebooks/31-eval.ipynb'.
