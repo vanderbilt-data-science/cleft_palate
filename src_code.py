@@ -1,4 +1,4 @@
-from sklearn.metrics import classification_report, f1_score, roc_auc_score, roc_curve, accuracy_score, confusion_matrix
+from sklearn.metrics import classification_report, f1_score, roc_auc_score, roc_curve, accuracy_score
 import matplotlib.pyplot as plt
 import seaborn as sns
 import numpy as np
@@ -128,19 +128,6 @@ def evaluate(model, data_loader, device, criterion=nn.BCEWithLogitsLoss()):
 
     return eval_out
 
-
-def save_confusion_matrix(eval_out, results_path, name):
-    conf_matrix = confusion_matrix(eval_out['all_labels'], eval_out['all_preds'])
-    print("Confusion Matrix: ", confusion_matrix)
-    plt.figure(figsize=(10, 7))
-    sns.heatmap(conf_matrix, annot=True, fmt='d', cmap='Blues', xticklabels=['injection', 'noise'], yticklabels=['injection', 'noise'])
-    plt.xlabel('Predicted')
-    plt.ylabel('True')
-    plt.title(f'{name.capitalize()} Confusion Matrix')
-    confusion_matrix_path = os.path.join(results_path, f'{name}_confusion_matrix.png')
-    plt.savefig(confusion_matrix_path)
-    plt.close()
-
 def train(model, train_loader, val_loader, optimizer, criterion, device, num_epochs, results_path, checkpoint_path):
     best_val_loss = float('inf')
     early_stopper = EarlyStopper(patience=10)
@@ -189,7 +176,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
         if val_loss < best_val_loss:
             best_val_loss = val_loss
             torch.save(model.state_dict(), checkpoint_path)
-            # Save evaluation results and confusion matrix for the best model
+            # Save evaluation results for the best model
             eval_output_path = os.path.join(results_path, 'best_valid_evaluation_output.json')
             with open(eval_output_path, 'w') as f:
                 json_eval = {
@@ -203,14 +190,23 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
                 }
                 json.dump(json_eval, f, indent=4)
             
-            # Save validation confusion matrix
-            save_confusion_matrix(val_eval_out, results_path, 'valid')
+           
         if early_stopper.early_stop(val_loss):
             print(f"Early stopping at epoch {epoch+1}")
             break
     
     # Evaluate on training set
     train_eval_out = evaluate(model, train_loader, device, criterion)
-    save_confusion_matrix(train_eval_out, results_path, 'train')
-
+    train_output_path = os.path.join(results_path, 'best_train_evaluation_output.json')
+    with open(train_output_path, 'w') as f:
+        json_eval = {
+            'loss':  train_eval_out['loss'],
+            'auc': train_eval_out['auc'],
+            'f1': train_eval_out['f1'],
+            'accuracy': train_eval_out['accuracy'],
+            'report': train_eval_out['report'],
+            'fpr': train_eval_out['fpr'].tolist(),
+            'tpr': train_eval_out['tpr'].tolist(),
+        }
+        json.dump(json_eval, f, indent=4)
     return train_losses, val_losses, val_aucs, train_times

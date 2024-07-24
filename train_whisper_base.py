@@ -21,9 +21,7 @@ current_wd = os.getcwd()
 
 # load data from disk
 train_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/train_dataset/train_dataset')
-test_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/test_dataset/test_dataset')
 val_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/val_dataset/val_dataset')
-
 
 
 model_checkpoint = "openai/whisper-base"
@@ -36,14 +34,11 @@ device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 # Data Loader: 
 train_dataset = SpeechClassificationDataset(train_audio_dataset,  feature_extractor= feature_extractor, encoder= encoder)
-test_dataset = SpeechClassificationDataset(test_audio_dataset,  feature_extractor = feature_extractor, encoder= encoder)
 val_dataset = SpeechClassificationDataset(val_audio_dataset, feature_extractor=  feature_extractor, encoder=encoder)
 
 batch_size = 8
-
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
-test_loader = DataLoader(test_dataset, batch_size=batch_size, shuffle=False)
 
 print("Data Loader loaded successfully")
 

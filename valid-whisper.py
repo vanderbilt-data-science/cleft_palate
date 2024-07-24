@@ -66,6 +66,7 @@ model.load_state_dict(new_state_dict)
 model = model.to(device)
 eval_out = evaluate(model, test_loader, device)
 
+
 all_labels = eval_out['all_labels']
 all_preds = eval_out['all_preds']
 
@@ -76,5 +77,15 @@ print("Accuracy: ", eval_out['accuracy'])
 
 result_path = f'{current_wd}/data/model_performance'
 
-# Generate confusion matrix
-save_confusion_matrix(eval_out, result_path, 'test')
+output_path = os.path.join(result_path, 'test_evaluation_output.json')
+with open(output_path, 'w') as f:
+    json_eval = {
+        'loss':  eval_out['loss'],
+        'auc': eval_out['auc'],
+        'f1': eval_out['f1'],
+        'accuracy': eval_out['accuracy'],
+        'report': eval_out['report'],
+        'fpr': eval_out['fpr'].tolist(),
+        'tpr': eval_out['tpr'].tolist(),
+    }
+    json.dump(json_eval, f, indent=4)
