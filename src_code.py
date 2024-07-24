@@ -1,6 +1,4 @@
 from sklearn.metrics import classification_report, f1_score, roc_auc_score, roc_curve, accuracy_score
-import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 import json
 import torch.nn as nn
@@ -198,6 +196,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
     # Evaluate on training set
     train_eval_out = evaluate(model, train_loader, device, criterion)
     train_output_path = os.path.join(results_path, 'best_train_evaluation_output.json')
+    print("start json")
     with open(train_output_path, 'w') as f:
         json_eval = {
             'loss':  train_eval_out['loss'],
@@ -209,4 +208,5 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
             'tpr': train_eval_out['tpr'].tolist(),
         }
         json.dump(json_eval, f, indent=4)
+    print("finish train json")
     return train_losses, val_losses, val_aucs, train_times

@@ -1,13 +1,8 @@
 # import libraries
 import datasets
 from datasets import Audio, load_from_disk
-import pandas as pd
 import os
-import matplotlib.pyplot as plt
-import seaborn as sns
-import numpy as np
 import json
-import glob
 #M Model and encoder 
 from sklearn.model_selection import train_test_split
 from transformers import WhisperFeatureExtractor, AdamW
@@ -17,12 +12,8 @@ import torch.utils.data
 from torch.utils.data import Dataset, DataLoader
 
 import whisper
-
-from sklearn.metrics import classification_report, f1_score, roc_auc_score, roc_curve, accuracy_score, confusion_matrix
-from tqdm import tqdm
-import time
 # Import the model: 
-from src_code import SpeechClassificationDataset, SpeechClassifier, evaluate, save_confusion_matrix
+from src_code import SpeechClassificationDataset, SpeechClassifier, evaluate
 
 # Get the current working directory
 current_wd = os.getcwd()

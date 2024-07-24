@@ -1,8 +1,6 @@
 # import libraries
 from datasets import load_from_disk
-import pandas as pd
 import os
-
 
 #M Model and encoder 
 from sklearn.model_selection import train_test_split
