@@ -16,10 +16,10 @@ from src_code import *
 # Get the current working directory
 current_wd = os.getcwd()
 
-
+#/workspace/cleft_palate/cleft_palate/data/public_samples
 # load data from disk
-train_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/train_dataset/train_dataset')
-val_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/val_dataset/val_dataset')
+train_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/train_dataset')
+val_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/val_dataset')
 
 
 model_checkpoint = "openai/whisper-base"
@@ -27,23 +27,23 @@ model_checkpoint = "openai/whisper-base"
 feature_extractor = WhisperFeatureExtractor.from_pretrained(model_checkpoint)
 whisper_model = whisper.load_model('small')
 encoder = whisper_model.encoder
-device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+device = torch.device('cuda:0')
 
 
 # Data Loader: 
 train_dataset = SpeechClassificationDataset(train_audio_dataset,  feature_extractor= feature_extractor, encoder= encoder)
 val_dataset = SpeechClassificationDataset(val_audio_dataset, feature_extractor=  feature_extractor, encoder=encoder)
-
-batch_size = 8
+batch_size = 1
 train_loader = DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
 val_loader = DataLoader(val_dataset, batch_size=batch_size, shuffle=False)
 
+print(train_dataset[0][0].size())
 print("Data Loader loaded successfully")
 
 num_labels = 1 # Change to 1 when doing binary classifications
 
-model = SpeechClassifier(num_labels, encoder)
-optimizer = torch.optim.AdamW(model.parameters(), lr=2e-5, betas=(0.9, 0.999), eps=1e-08)
+model = SpeechClassifier(num_labels, encoder).to(device)
+optimizer = torch.optim.AdamW(model.parameters(), lr=2e-6, betas=(0.9, 0.999), eps=1e-08)
 criterion = nn.BCEWithLogitsLoss()
 model_name = 'whisper-small'
 

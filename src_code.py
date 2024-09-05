@@ -44,9 +44,15 @@ class SpeechClassifier(nn.Module):
 
     def forward(self, input_features):
         encoded_output = self.encoder(input_features)
+        #print("encoded output:", encoded_output)
+
         encoded_output = encoded_output.permute(0, 2, 1)
+        #print("encoded output with permute:",encoded_output)
+        
         pooled_output = self.pooling(encoded_output).squeeze(-1)
+        #print("pooled_output", pooled_output)
         logits = self.classifier(pooled_output)
+        #print("logits", logits)
         return logits
 
 
@@ -92,9 +98,9 @@ def evaluate(model, data_loader, device, criterion=nn.BCEWithLogitsLoss()):
 
             preds = torch.sigmoid(logits).round()
             raw_preds = torch.sigmoid(logits)
-            all_raw_preds.append(raw_preds.numpy())
-            all_labels.append(labels.numpy())
-            all_preds.append(preds.numpy())
+            all_raw_preds.append(raw_preds.cpu().detach().numpy())
+            all_labels.append(labels.cpu().detach().numpy())
+            all_preds.append(preds.cpu().detach().numpy())
 
     all_labels = np.concatenate(all_labels, axis=0)
     all_preds = np.concatenate(all_preds, axis=0)
@@ -149,7 +155,7 @@ def train(model, train_loader, val_loader, optimizer, criterion, device, num_epo
             labels = labels.view(-1, 1).float().to(device)
             #print("labels output: ", labels )
             loss = criterion(outputs, labels)
-            
+            #print("loss:", loss)
             loss.backward()
             optimizer.step()
             

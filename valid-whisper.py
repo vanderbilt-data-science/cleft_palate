@@ -20,9 +20,9 @@ current_wd = os.getcwd()
 
 
 # load data from disk
-train_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/train_dataset/train_dataset')
-test_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/test_dataset/test_dataset')
-val_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/val_dataset/val_dataset')
+train_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/train_dataset')
+test_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/test_dataset')
+val_audio_dataset = load_from_disk(f'{current_wd}/data/public_samples/val_dataset')
 
 
 
